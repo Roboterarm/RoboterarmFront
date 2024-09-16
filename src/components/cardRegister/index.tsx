@@ -9,13 +9,13 @@ import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import { useState } from 'react';
 
-export default function CardLogin() {
+export default function CardRegister() {
   const [status, setStatus] = useState("")
   
   const card = (
     <React.Fragment>
     <CardContent>
-    <Typography variant="h4" component="div">Login</Typography>
+    <Typography variant="h4" component="div">Cadastrar-se</Typography>
     <Box
       component="form"
       sx={{ '& .MuiTextField-root': { m: 1, width: '25ch' } }}
@@ -25,12 +25,46 @@ export default function CardLogin() {
         <TextField
           required
           id="standard-required"
+          label="Nome"
+          variant="standard"
+          />
+        <TextField
+          required
+          id="standard-required"
+          label="Sobrenome"
+          variant="standard"
+          />
+        <TextField
+          required
+          id="standard-required"
           label="Email"
           variant="standard"
           />
         <TextField
+          required
+          id="standard-required"
+          label="Telefone"
+          variant="standard"
+          />
+        <TextField
+          required
+          id="standard-required"
+          label="Data Nascimento"
+          type="date"
+          variant="standard"
+          />
+        <TextField
+          required
           id="standard-password-input"
-          label="Password"
+          label="Senha"
+          type="password"
+          autoComplete="current-password"
+          variant="standard"
+          />
+        <TextField
+          required
+          id="standard-password-input"
+          label="Confirmar Senha"
           type="password"
           autoComplete="current-password"
           variant="standard"
@@ -39,9 +73,8 @@ export default function CardLogin() {
 
     </CardContent>
     <CardActions>
-      
+      <ButtonMid text="Cancelar"/>
       <ButtonMid text="Cadastrar-se"/>
-      <ButtonMid text="Entrar"/>
     </CardActions>
   </React.Fragment>
 );
