@@ -7,7 +7,39 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 export default function CardLogin() {
+    const navigate = useNavigate(); 
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+  const login = async () => {
+    
+    // if(!email || !password)
+    //   return console.error("Senha está diferente do Confirmar Senha")
+
+    try {
+        const response = await axios.get('http://localhost:3000/auth/login', {
+          
+        });
+        if (response.status === 200) {
+            console.log("Usuário logado com sucesso!");
+            navigate('/home');
+        } else {
+            console.error("Erro ao fazer login:", response.data.message);
+        }
+    } catch (error) {
+        console.error("Erro ao fazer login:", error);
+        // alert("Os dados não conferem!") refazer alert
+    }
+};
+
+
+
+
 
   const card = (
     <React.Fragment>
@@ -28,6 +60,7 @@ export default function CardLogin() {
             label="Email"
             variant="standard"
             sx={{ margin: "10px 80px" }}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <TextField
             required
@@ -37,12 +70,13 @@ export default function CardLogin() {
             autoComplete="current-password"
             variant="standard"
             sx={{ margin: "10px 80px" }}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </Box>
       </CardContent>
       <CardActions sx={{justifyContent: "center"}}>
         <Button variant="contained" sx={{ width: "140px", height: "50px", margin: "20px"}}>Cadastrar-se</Button>
-        <Button variant="outlined" sx={{ width: "140px", height: "50px", margin: "20px 30px"}}>Entrar</Button>
+        <Button variant="outlined" sx={{ width: "140px", height: "50px", margin: "20px 30px"}}  onClick={login}>Entrar</Button>
       </CardActions>
     </React.Fragment>
   );
