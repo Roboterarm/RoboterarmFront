@@ -11,13 +11,15 @@ import './index.css'
 import theme from './theme';
 
 import HomePage from './Pages/HomePage/index.tsx';
-import LoginRegisterPage from './Pages/LoginRegisterPage/index.tsx';
+import LoginPage from './Pages/LoginPage/index.tsx';
 import SensorPage from './Pages/SensorPage/index.tsx';
 import FirebaseContext from './context/firebaseContext';
 import firebaseConfig from './firebaseConfig.ts';
+import RegisterPage from './Pages/RegisterPage/index.tsx';
 
 const router = createBrowserRouter([
-  { path: "/", element: <LoginRegisterPage/> },
+  { path: "/", element: <LoginPage/> },
+  { path: "/register", element: <RegisterPage/> },
   { path: "/sensor", element: <SensorPage/> },
   { path: "/home", element: <HomePage/> }
 ]);
