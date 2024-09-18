@@ -7,9 +7,13 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import Link from '@mui/material/Link';
+
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Alert from '@mui/material/Alert/Alert';
+import AlertTitle from '@mui/material/AlertTitle/AlertTitle';
 export default function CardLogin() {
     const navigate = useNavigate(); 
 
@@ -22,8 +26,9 @@ export default function CardLogin() {
     //   return console.error("Senha está diferente do Confirmar Senha")
 
     try {
-        const response = await axios.get('http://localhost:3000/auth/login', {
-          
+        const response = await axios.post('http://localhost:3000/auth/login', {
+          email: email,
+          pass: password
         });
         if (response.status === 200) {
             console.log("Usuário logado com sucesso!");
@@ -36,9 +41,6 @@ export default function CardLogin() {
         // alert("Os dados não conferem!") refazer alert
     }
 };
-
-
-
 
 
   const card = (

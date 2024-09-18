@@ -32,20 +32,17 @@ export default function CardRegister() {
 
     setNameComplete(name.trim() + " " + sobrenome.trim())
 
-    console.log(nameComplete) //retirar depois
-
     if (confirmPassword !== password)
         return console.error("Senha está diferente do Confirmar Senha")
 
-
     try {
         const response = await axios.post('http://localhost:3000/user/register', {
-            nameComplete,
-            email,
-            telefone,
-            password,
+            name: nameComplete,
+            email: email,
+            phone: telefone,
+            password: password,
         });
-        if (response.status === 200) {
+        if (response.status === 201) {
             console.log("Usuário cadastrado com sucesso!");
             navigate('/');
         } else {
