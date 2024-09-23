@@ -12,7 +12,6 @@ export default function RegisterPage() {
 
     return (
         <ThemeProvider theme={ligth}>
-        <Navbar/>
             <Grid container sx={{marginTop: "80px"}}>
                 <Grid offset={{xs: 2, sm: 2, md: 3, lg: 3, xl:4 }} size={{xs: 8, sm: 8, md: 6, lg: 6, xl:4 }}>
                     <CardRegister/>

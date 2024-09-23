@@ -11,15 +11,18 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
+import Icon from '@mui/icons-material/PrecisionManufacturing';
+import { useNavigate } from 'react-router-dom';
 
-const pages = ['Sensor', 'Record', 'Edit'];
+
+const pages = ['Home', 'Sensor', 'Macros'];
 const settings = ['Profile', 'Account', 'Logout'];
 
 function Navbar() {
+  const navigate = useNavigate(); 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-
+  
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -40,12 +43,12 @@ function Navbar() {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+          <Icon onClick={() => navigate("/home")} sx={{ display: { xs: 'none', md: 'flex'}, mr: 1 }} />
           <Typography
             variant="h6"
             noWrap
             component="a"
-            href=""
+            onClick={() => navigate("/home")}
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -88,17 +91,17 @@ function Navbar() {
             >
               {pages.map((page) => (
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
+                  <Typography onClick={() => navigate("/" + page)} sx={{ textAlign: 'center' }}>{page}</Typography>
                 </MenuItem>
               ))}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+          <Icon onClick={() => navigate("/home")} sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
           <Typography
             variant="h5"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            onClick={() => navigate("/home")}
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
@@ -110,13 +113,14 @@ function Navbar() {
               textDecoration: 'none',
             }}
           >
-            LOGO
+            Roboterarm
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: "right", marginRight: "20px"}}>
             {pages.map((page) => (
               <Button
                 key={page}
-                onClick={handleCloseNavMenu}
+                // onClick={handleCloseNavMenu} // não sei oq isso faz do Material UI
+                onClick={() => navigate("/" + page)}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
                 {page}

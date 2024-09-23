@@ -3,11 +3,13 @@ import bg2 from "/bg2.svg";
 
 import { useContext, useState } from "react";
 import { get, getDatabase, ref, set } from "firebase/database";
-import { Container, Paper } from "@mui/material";
+import { Container, Paper, ThemeProvider } from "@mui/material";
+import ligth from "../../components/themes/index.tsx";
 import Grid from "@mui/material/Grid2";
 
 import RAInput from "../../components/ra_input";
 import FirebaseContext from "../../context/firebaseContext";
+import Navbar from "../../components/navbar";
 
 export default function SensorPage() {
   const fb = useContext(FirebaseContext); 
@@ -47,6 +49,8 @@ export default function SensorPage() {
   }
 
   return (
+    <ThemeProvider theme={ligth}>
+    <Navbar/>
     <Container>
       <Grid container justifyContent={"center"}>
         <Grid container size={8}>
@@ -92,6 +96,7 @@ export default function SensorPage() {
         </Grid>
       </Grid>
       <img src={bg2} className={styles.bgbars} alt="bg2" />
-    </Container>
+    </Container>        
+    </ThemeProvider>
   );
 }

@@ -5,7 +5,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
-import CommentIcon from '@mui/icons-material/Comment';
+import InfoIcon from '@mui/icons-material/Info';
 import { useState } from 'react';
 
 export default function SaveList() {
@@ -27,8 +27,12 @@ export default function SaveList() {
   return (
     <>
       <List sx={{
-        width: '100%', maxWidth: 500, overflow: 'auto',
-        maxHeight: 640, bgcolor: 'background.paper'
+        width: '100%', 
+        maxWidth: 500, 
+        maxHeight: 640, 
+        height: 600, 
+        overflow: 'auto',
+        bgcolor: 'background.paper',
       }}>
         {[0, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11].map((value) => {
           const labelId = `checkbox-list-label-${value}`;
@@ -38,13 +42,12 @@ export default function SaveList() {
               key={value}
               secondaryAction={
                 <IconButton edge="end" aria-label="comments">
-                  <CommentIcon />
+                  <InfoIcon />
                 </IconButton>
               }
-
             >
               <ListItemButton role={undefined} onClick={handleToggle(value)} dense>
-                <ListItemIcon>
+                {/* <ListItemIcon>
                   <Checkbox
                     edge="start"
                     checked={checked.indexOf(value) !== -1}
@@ -52,8 +55,8 @@ export default function SaveList() {
                     disableRipple
                     inputProps={{ 'aria-labelledby': labelId }}
                   />
-                </ListItemIcon>
-                <ListItemText id={labelId} primary={`Line item ${value + 1}`} />
+                </ListItemIcon> */}
+                <ListItemText id={labelId} primary={`Save  ${value + 1}`} />
               </ListItemButton>
             </ListItem>
           );

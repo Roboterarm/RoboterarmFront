@@ -7,44 +7,96 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import Link from '@mui/material/Link';
-
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Alert from '@mui/material/Alert/Alert';
-import AlertTitle from '@mui/material/AlertTitle/AlertTitle';
-export default function CardLogin() {
-    const navigate = useNavigate(); 
+import Snackbar from '@mui/material/Snackbar/Snackbar';
 
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+export default function CardLogin() {
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [errorMessage, setErrorMessage] = useState('');
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (errorMessage) {
+      const timer = setTimeout(() => {
+        setErrorMessage('');
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [errorMessage]);
 
   const login = async () => {
-    
-    // if(!email || !password)
-    //   return console.error("Senha está diferente do Confirmar Senha")
+
+    if (!email || !password) {
+      setErrorMessage("Email e senha são obrigatórios");
+      return;
+    }
+    // Email Validation
+    if(!email.includes("@") || email.length < 8 || email.length > 30){
+      setErrorMessage('Email é invalido');
+      return false;
+    }
+    // Senha Validation
+    if(password.length < 8 || password.length > 30){
+      setErrorMessage('A Senha é invalida');
+      return false;
+    }
 
     try {
-        const response = await axios.post('http://localhost:3000/auth/login', {
-          email: email,
-          pass: password
-        });
-        if (response.status === 200) {
-            console.log("Usuário logado com sucesso!");
-            navigate('/home');
-        } else {
-            console.error("Erro ao fazer login:", response.data.message);
-        }
-    } catch (error) {
-        console.error("Erro ao fazer login:", error);
-        // alert("Os dados não conferem!") refazer alert
+      const response = await axios.post('http://localhost:3000/auth/login', {
+        email: email,
+        pass: password
+      });
+
+      if (response.status === 200) {
+        setOpen(true);
+        setTimeout(() => {
+          navigate('/home');
+        }, 1000);
+      }
+      else if (response.status === 401) {
+        setErrorMessage('Usuário ou senha incorretos');
+        return false;
+      }
+      else {
+        console.error("Erro ao fazer login:", response.data.message);
+        setErrorMessage("Erro inesperado. Tente novamente mais tarde.");
+      }
+    } catch (error: any) {
+      if (error.response && error.response.status === 404) {
+        setErrorMessage('Usuário não encontrado');
+      } else {
+        console.error("Erro ao fazer login server", error);
+        setErrorMessage("Usuário não encontrado.");
+      }
     }
-};
+  };
+
+
 
 
   const card = (
     <React.Fragment>
+      {errorMessage && (
+        <Alert
+          severity="error"
+          sx={{
+            position: 'fixed',
+            top: '100px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 1000,
+          }}
+        >
+          {errorMessage}
+        </Alert>
+      )}
       <CardContent>
         <Box sx={{
           display: 'grid',
@@ -55,7 +107,7 @@ export default function CardLogin() {
           borderRadius: 1,
           textAlign: "center",
         }}>
-          <Typography variant="h1" component="div" sx={{fontSize: "60px", margin: '10px' }}>Login</Typography>
+          <Typography variant="h1" component="div" sx={{ fontSize: "60px", margin: '10px' }}>Login</Typography>
           <TextField
             required
             id="standard-required"
@@ -76,15 +128,24 @@ export default function CardLogin() {
           />
         </Box>
       </CardContent>
-      <CardActions sx={{justifyContent: "center"}}>
-        <Button variant="contained" sx={{ width: "140px", height: "50px", margin: "20px"}}>Cadastrar-se</Button>
-        <Button variant="outlined" sx={{ width: "140px", height: "50px", margin: "20px 30px"}}  onClick={login}>Entrar</Button>
+      <CardActions sx={{ justifyContent: "center" }}>
+        <Button variant="contained" sx={{ width: "140px", height: "50px", margin: "20px" }} onClick={() => navigate("/register")}>Cadastrar-se</Button>
+        <Button variant="outlined" sx={{ width: "140px", height: "50px", margin: "20px 30px" }} onClick={login}>Entrar</Button>
       </CardActions>
+      <Snackbar
+        open={open}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        autoHideDuration={1000}
+      >
+        <Alert severity="success" sx={{ width: '100%' }}>
+          Login realizado com sucesso!
+        </Alert>
+      </Snackbar>
     </React.Fragment>
   );
   return (
     <Paper>
-      <Box sx={{ minWidth: 275 }}>
+      <Box sx={{ minWidth: 275, borderRadius: "100px" }}>
         <Card variant="outlined">{card}</Card>
       </Box>
     </Paper>
