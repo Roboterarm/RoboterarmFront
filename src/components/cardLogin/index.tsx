@@ -13,6 +13,7 @@ import axios from 'axios';
 import Alert from '@mui/material/Alert/Alert';
 import Snackbar from '@mui/material/Snackbar/Snackbar';
 
+
 export default function CardLogin() {
   const navigate = useNavigate();
 
@@ -53,6 +54,8 @@ export default function CardLogin() {
         email: email,
         pass: password
       });
+
+      sessionStorage.setItem('token', response.data.accessToken)
 
       if (response.status === 200) {
         setOpen(true);
@@ -130,7 +133,7 @@ export default function CardLogin() {
       </CardContent>
       <CardActions sx={{ justifyContent: "center" }}>
         <Button variant="contained" sx={{ width: "140px", height: "50px", margin: "20px" }} onClick={() => navigate("/register")}>Cadastrar-se</Button>
-        <Button variant="outlined" sx={{ width: "140px", height: "50px", margin: "20px 30px" }} onClick={login}>Entrar</Button>
+        <Button variant="outlined" sx={{ width: "140px", height: "50px", margin: "20px 30px" }} type="submit" onClick={login}>Entrar</Button>
       </CardActions>
       <Snackbar
         open={open}

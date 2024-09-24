@@ -16,12 +16,20 @@ import SensorPage from './Pages/SensorPage/index.tsx';
 import FirebaseContext from './context/firebaseContext';
 import firebaseConfig from './firebaseConfig.ts';
 import RegisterPage from './Pages/RegisterPage/index.tsx';
+import ProtectedRoute from './Pages/ProtectRoutePage/index.tsx';
+import AccesDenied from './Pages/AccesDenied/index.tsx';
+import Navbar from './components/navbar/index.tsx';
 
 const router = createBrowserRouter([
   { path: "/", element: <LoginPage/> },
   { path: "/register", element: <RegisterPage/> },
   { path: "/sensor", element: <SensorPage/> },
-  { path: "/home", element: <HomePage/> }
+  { path: "/home", element: <ProtectedRoute
+    errorPage={<AccesDenied />}
+    targetPage={<Navbar/>}
+    />
+  }
+  
 ]);
 
 createRoot(document.getElementById('root')!).render(
