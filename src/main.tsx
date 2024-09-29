@@ -19,17 +19,15 @@ import RegisterPage from './Pages/RegisterPage/index.tsx';
 import ProtectedRoute from './Pages/ProtectRoutePage/index.tsx';
 import AccesDenied from './Pages/AccesDenied/index.tsx';
 import Navbar from './components/navbar/index.tsx';
+import MacroPage from './Pages/MacroPage/index.tsx';
 
 const router = createBrowserRouter([
+  
   { path: "/", element: <LoginPage/> },
   { path: "/register", element: <RegisterPage/> },
   { path: "/sensor", element: <SensorPage/> },
-  { path: "/home", element: <ProtectedRoute
-    errorPage={<AccesDenied />}
-    targetPage={<Navbar/>}
-    />
-  }
-  
+  { path: "/home", element: <HomePage/> },
+  { path: "/macros", element: <MacroPage/> },
 ]);
 
 createRoot(document.getElementById('root')!).render(

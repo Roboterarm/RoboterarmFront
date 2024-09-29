@@ -11,8 +11,11 @@ import background from "../../assets/Home/background.svg"
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
+import { useNavigate } from "react-router-dom";
 
 export default function HomePage() {
+    const navigate = useNavigate(); 
+
     return (
             <ThemeProvider theme={ligth}>
             <Navbar />
@@ -30,10 +33,10 @@ export default function HomePage() {
                                 marginTop: "4%",
                             }}
                         >
-                            <Button variant="contained" className={styles.size} >Macros</Button>
-                            <Button variant="contained" className={styles.size} >Sensor</Button>
-                            <Button variant="contained" className={styles.size} >Criar Novo Movimento</Button>
-                            <Button variant="contained" className={styles.size} >Perfil</Button>
+                            <Button variant="contained" className={styles.size} onClick={() => navigate("/macros")}>Macros</Button>
+                            <Button variant="contained" className={styles.size} onClick={() => navigate("/sensor")}>Sensor</Button>
+                            <Button variant="contained" className={styles.size} onClick={() => navigate("/macros")}>Criar Novo Movimento</Button>
+                            <Button variant="contained" className={styles.size} onClick={() => navigate("/perfil")}>Perfil</Button>
                         </Stack>
                     </Grid>
                     <Grid size={{xs: 12, sm: 12, md: 12, lg: 12, xl:6 }} sx={{ marginTop: "5%"}}>
