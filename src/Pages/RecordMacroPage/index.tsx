@@ -26,7 +26,7 @@ import LinearProgress from '@mui/material/LinearProgress';
 import Typography from "@mui/material/Typography/Typography";
 
 
-export default function MacroPage() {
+export default function RecordMacroPage() {
     const fb = useContext(FirebaseContext); 
     const db = getDatabase(fb);
     
@@ -41,8 +41,37 @@ export default function MacroPage() {
     const [rotZ, setRotZ] = useState(0);
     const [muscle, setMuscle] = useState(0);
 
+    const [movements, setMovements] = useState<
+        { posX: number; posY: number; posZ: number; rotX: number; rotY: number; rotZ: number; muscle: number }[]
+    >([]);
+
+    const [save, setSave] = useState({
+        posX: 0,
+        posY: 0,
+        posZ: 0,
+        rotX: 0,
+        rotY: 0,
+        rotZ: 0,
+        muscle: 0,
+    });
+
     useEffect(() => {
         let timer: NodeJS.Timeout | undefined;
+
+        const saveMovement = () => {
+            setMovements((prevMovements) => [
+                ...prevMovements,
+                {
+                    posX,
+                    posY,
+                    posZ,
+                    rotX,
+                    rotY,
+                    rotZ,
+                    muscle,
+                },
+            ]);
+        };
 
         const fetchData = async () => {
             try {
@@ -54,6 +83,17 @@ export default function MacroPage() {
                 setRotY(res.rotY);
                 setRotZ(res.rotZ);
                 setMuscle(res.muscle);
+
+                setSave({
+                    posX: res.posX,
+                    posY: res.posY,
+                    posZ: res.posZ,
+                    rotX: res.rotX,
+                    rotY: res.rotY,
+                    rotZ: res.rotZ,
+                    muscle: res.muscle,
+                });
+
             } catch (error) {
                 console.error('Error fetching data: ', error);
             }
@@ -62,16 +102,16 @@ export default function MacroPage() {
         if (isRunning && timeLeft > 0) {
             timer = setInterval(() => {
                 setTimeLeft(prev => prev - 1);
+                fetchData();
+                saveMovement();
             }, 1000);
-
-            fetchData(); 
 
         } else if (timeLeft === 0) {
             setIsRunning(false);
             clearInterval(timer);
         }
         return () => clearInterval(timer);
-    }, [isRunning, timeLeft]);
+    }, [isRunning, timeLeft, posX, posY, posZ, rotX, rotY, rotZ, muscle]);
 
     const startTimer = () => {
         setIsRunning(true);
@@ -152,7 +192,7 @@ export default function MacroPage() {
                 marginTop="30px">
                 <ButtonStandard path="/macros" text="Macros" />
                 <ButtonStandard path="/macros" text="Salvar" />
-                <ButtonStandard path="/macros" text="Reset" />
+                <ButtonStandard onClick={() => window.location.reload()} text="Reset" />
             </Grid>
         </Grid>
             {/* <img src={background} className={styles.background} alt="bg2" /> */ }

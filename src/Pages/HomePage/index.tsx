@@ -3,7 +3,7 @@ import styles from "./styles.module.scss"
 import Grid from "@mui/material/Grid2";
 import Navbar from "../../components/navbar/index.tsx";
 import Stack from "@mui/material/Stack";
-import SaveList from "../../components/saveList/index.tsx";
+import MacroList from "../../components/macroList/index.tsx";
 import { ThemeProvider } from '@mui/material/styles';
 import ligth from "../../components/themes/index.tsx";
 
@@ -35,7 +35,7 @@ export default function HomePage() {
                         >
                             <Button variant="contained" className={styles.size} onClick={() => navigate("/macros")}>Macros</Button>
                             <Button variant="contained" className={styles.size} onClick={() => navigate("/sensor")}>Sensor</Button>
-                            <Button variant="contained" className={styles.size} onClick={() => navigate("/macros")}>Criar Novo Movimento</Button>
+                            <Button variant="contained" className={styles.size} onClick={() => navigate("/recordmacro")}>Criar Novo Movimento</Button>
                             <Button variant="contained" className={styles.size} onClick={() => navigate("/perfil")}>Perfil</Button>
                         </Stack>
                     </Grid>
@@ -49,7 +49,7 @@ export default function HomePage() {
                         >
                             <Paper sx={{width: "500px", height: "700px",borderRadius: "20px"}}>
                                 <Typography variant="h2">Movimentos Salvos</Typography>
-                                <SaveList/>
+                                <MacroList/>
                             </Paper>
                         </Grid>
                     </Grid>

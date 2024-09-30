@@ -58,7 +58,7 @@ export default function SensorPage() {
         size={{ xs: 10, sm: 8, md: 8, lg: 6, xl: 6 }}
         offset={{ xs: 1, sm: 2, md: 2, lg: 3, xl: 3 }}>
           <Grid>
-            <Typography variant="h1">SENSORES</Typography>
+            <Typography variant="h1">Sensores</Typography>
           </Grid>
           <Grid container size={12} justifyContent="center" alignItems="center">
               <PrecisionManufacturing color="primary" sx={{width: "300px", height: "auto"}}/>

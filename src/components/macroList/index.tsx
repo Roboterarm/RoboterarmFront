@@ -8,7 +8,10 @@ import IconButton from '@mui/material/IconButton';
 import InfoIcon from '@mui/icons-material/Info';
 import { useState } from 'react';
 
-export default function SaveList() {
+import DeleteIcon from '@mui/icons-material/Delete';
+
+
+export default function MacroList() {
   const [checked, setChecked] = useState([0]);
 
   const handleToggle = (value: number) => () => {
@@ -42,7 +45,7 @@ export default function SaveList() {
               key={value}
               secondaryAction={
                 <IconButton edge="end" aria-label="comments">
-                  <InfoIcon />
+                  <DeleteIcon />
                 </IconButton>
               }
             >

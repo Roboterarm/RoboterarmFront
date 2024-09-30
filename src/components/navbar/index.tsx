@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 const pages = ['Home', 'Sensor', 'Macros'];
-const settings = ['Profile', 'Account', 'Logout'];
+const settings = ['Perfil', 'Sair'];
 
 function Navbar() {
   const navigate = useNavigate(); 
@@ -151,7 +151,7 @@ function Navbar() {
             >
               {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
+                  <Typography onClick={() => navigate("/" + setting)} sx={{ textAlign: 'center' }}>{setting}</Typography>
                 </MenuItem>
               ))}
             </Menu>
