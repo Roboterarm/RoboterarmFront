@@ -39,7 +39,7 @@ export default function HomePage() {
                             <Button variant="contained" className={styles.size} onClick={() => navigate("/perfil")}>Perfil</Button>
                         </Stack>
                     </Grid>
-                    <Grid size={{xs: 12, sm: 12, md: 12, lg: 12, xl:6 }} sx={{ marginTop: "5%"}}>
+                    <Grid size={{xs: 12, sm: 12, md: 12, lg: 12, xl:6 }} sx={{ marginTop: "5%", marginBottom: "5%"}}>
                         <Grid
                             container
                             spacing={0}

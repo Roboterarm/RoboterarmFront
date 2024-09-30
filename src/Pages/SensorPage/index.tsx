@@ -3,13 +3,15 @@ import bg2 from "/bg2.svg";
 
 import { useContext, useState } from "react";
 import { get, getDatabase, ref, set } from "firebase/database";
-import { Container, Paper, ThemeProvider } from "@mui/material";
+import { Container, Paper, ThemeProvider, Typography } from "@mui/material";
 import ligth from "../../components/themes/index.tsx";
 import Grid from "@mui/material/Grid2";
+import PrecisionManufacturing from '@mui/icons-material/PrecisionManufacturing';
 
 import RAInput from "../../components/ra_input";
 import FirebaseContext from "../../context/firebaseContext";
 import Navbar from "../../components/navbar";
+import ButtonStandard from "../../components/buttonNavigation/index.tsx";
 
 export default function SensorPage() {
   const fb = useContext(FirebaseContext); 
@@ -52,50 +54,49 @@ export default function SensorPage() {
     <ThemeProvider theme={ligth}>
     <Navbar/>
     <Container>
-      <Grid container justifyContent={"center"}>
-        <Grid container size={8}>
-          
+        <Grid container justifyContent="center" 
+        size={{ xs: 10, sm: 8, md: 8, lg: 6, xl: 6 }}
+        offset={{ xs: 1, sm: 2, md: 2, lg: 3, xl: 3 }}>
+          <Grid>
+            <Typography variant="h1">SENSORES</Typography>
+          </Grid>
+          <Grid container size={12} justifyContent="center" alignItems="center">
+              <PrecisionManufacturing color="primary" sx={{width: "300px", height: "auto"}}/>
+          </Grid>
+          <Grid
+              container 
+              size={{ xs: 10, sm: 10, md: 10, lg: 6, xl: 6 }}
+              offset={{ xs: 1, sm: 1, md: 1, lg: 0, xl: 0 }}
+              direction="column"
+          >
+
+              <RAInput value={posX} disabled label={"Pos. X"} />
+              <RAInput value={posY} disabled label={"Pos. Y"} />
+              <RAInput value={posZ} disabled label={"Pos. Z"} />
+          </Grid>
+          <Grid
+              container
+              size={{ xs: 10, sm: 10, md: 10, lg: 6, xl: 6 }}
+              offset={{ xs: 1, sm: 1, md: 1, lg: 0, xl: 0 }}
+              direction="column"
+          >
+              <RAInput value={rotX} disabled label={"Rot. X"} />
+              <RAInput value={rotY} disabled label={"Rot. Y"} />
+              <RAInput value={rotZ} disabled label={"Rot. Z"} />
+
+          </Grid>
+          <Grid container justifyContent="center" alignItems="center"
+              size={{ xs: 10, sm: 10, md: 10, lg: 6, xl: 6 }}
+              offset={{ xs: 1, sm: 1, md: 1, lg: 0, xl: 0 }}
+          >
+              <RAInput value={muscle} disabled label={"Muscle"} size={{ xs: 12, md: 12 }} />
+          </Grid>
+          <Grid container justifyContent="center" alignItems="center" size={12}>
+            <ButtonStandard onClick={() => writeUserData()} text="UPP"></ButtonStandard>
+            <ButtonStandard onClick={() => readUserData()} text="DOWN"></ButtonStandard>
+          </Grid>
         </Grid>
-        <Grid container size={8}>
-          <Grid
-            container
-            justifyContent={"space-between"}
-            size={{ xs: 6, md: 12 }}
-          >
-            <RAInput value={posX} disabled label={"Pos. X"} size={{ xs: 12, md: 4 }} />
-            <RAInput value={posY} disabled label={"Pos. Y"} size={{ xs: 12, md: 4 }} />
-            <RAInput value={posZ} disabled label={"Pos. Z"} size={{ xs: 12, md: 4 }} />
-          </Grid>
-          <Grid
-            container
-            justifyContent={"space-between"}
-            size={{ xs: 6, md: 12 }}
-          >
-            <RAInput value={rotX} disabled label={"Rot. X"} size={{ xs: 12, md: 4 }} />
-            <RAInput value={rotY} disabled label={"Rot. Y"} size={{ xs: 12, md: 4 }} />
-            <RAInput value={rotZ} disabled label={"Rot. Z"} size={{ xs: 12, md: 4 }} />
-          </Grid>
-          <Grid
-            container
-            justifyContent={"space-between"}
-            size={{ xs: 6, md: 12 }}
-          >
-            <RAInput value={muscle} disabled label={"Muscle"} size={{ xs: 12, md: 4 }} />
-          </Grid>
-          <Grid size={12} padding={1}>
-            <Paper
-              elevation={4}
-              sx={{
-                height: "400px",
-                width: "100%",
-              }}
-            ></Paper>
-          </Grid>
-          <button onClick={() => writeUserData()}>UPPP</button>
-          <button onClick={() => readUserData()}>DOWN</button>
-        </Grid>
-      </Grid>
-      <img src={bg2} className={styles.bgbars} alt="bg2" />
+      {/* <img src={bg2} className={styles.bgbars} alt="bg2" /> */}
     </Container>        
     </ThemeProvider>
   );

@@ -11,7 +11,7 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import Icon from '@mui/icons-material/PrecisionManufacturing';
+import PrecisionManufacturing from '@mui/icons-material/PrecisionManufacturing';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -43,7 +43,7 @@ function Navbar() {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Icon onClick={() => navigate("/home")} sx={{ display: { xs: 'none', md: 'flex'}, mr: 1 }} />
+          <PrecisionManufacturing onClick={() => navigate("/home")} sx={{ display: { xs: 'none', md: 'flex'}, mr: 1 }} />
           <Typography
             variant="h6"
             noWrap
@@ -96,7 +96,7 @@ function Navbar() {
               ))}
             </Menu>
           </Box>
-          <Icon onClick={() => navigate("/home")} sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+          <PrecisionManufacturing onClick={() => navigate("/home")} sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
           <Typography
             variant="h5"
             noWrap
