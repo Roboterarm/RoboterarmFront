@@ -15,7 +15,7 @@ import CardActions from "@mui/material/CardActions/CardActions";
 import { useNavigate } from "react-router-dom";
 import { Paper } from "@mui/material";
 
-export default function RecoverPasswordPage() {
+export default function RecoverConfirmPage() {
     const navigate = useNavigate();
 
     const [email, setEmail] = useState("");
@@ -39,21 +39,12 @@ export default function RecoverPasswordPage() {
                                     borderRadius: 1,
                                     textAlign: "center",
                                 }}>
-                                    <Typography variant="h1" component="div" sx={{ fontSize: "40px", margin: '10px' }}>Digite seu e-mail</Typography>
-                                    <Typography variant="h2" component="div" sx={{ fontSize: "18px", margin: '10px' }}>Digite o seu e-mail, assim que ENVIAR será enviado um link de para você podera recuperar a senha referente a seu email</Typography>
-                                    <TextField
-                                        required
-                                        id="standard-required"
-                                        label="Email"
-                                        variant="standard"
-                                        sx={{ margin: "10px 80px" }}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                    />
+                                    <Typography variant="h1" component="div" sx={{ fontSize: "40px", margin: '10px' }}>Email Enviado</Typography>
+                                    <Typography variant="h2" component="div" sx={{ fontSize: "18px", margin: '10px' }}>Agora você deve verificar a caixa de entrada do seu email, pois foi lhe enviado um email para colocar uma nova senha!</Typography>
                                 </Box>
                             </CardContent>
                             <CardActions sx={{ justifyContent: "center" }}>
                                 <Button variant="contained" sx={{ width: "140px", height: "50px", margin: "20px 30px" }} onClick={() => navigate("/")}>Voltar</Button>
-                                <Button variant="outlined" sx={{ width: "140px", height: "50px", margin: "20px" }} type="submit" onClick={() => navigate("/recoveryconfirm")} >enviar</Button>
                             </CardActions>
                         </Paper>
                     </React.Fragment>

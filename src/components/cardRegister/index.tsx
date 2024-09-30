@@ -166,28 +166,28 @@ export default function CardRegister() {
             required
             label="Nome"
             variant="standard"
-            sx={{ margin: "10px 80px" }}
+            sx={{ margin: "10px 80px" , width: "400px"}}
             onChange={(e) => { setName(e.target.value); setFullName(name.trim() + " " + lastname.trim()) }}
           />
           <TextField
             required
             label="Sobrenome"
             variant="standard"
-            sx={{ margin: "10px 80px" }}
+            sx={{ margin: "10px 80px" , width: "400px"}}
             onChange={(e) => { setLastname(e.target.value), setFullName(name.trim() + " " + lastname.trim()) }}
           />
           <TextField
             required
             label="Email"
             variant="standard"
-            sx={{ margin: "10px 80px" }}
+            sx={{ margin: "10px 80px" , width: "400px"}}
             onChange={(e) => setEmail(e.target.value)}
           />
           <TextField
             required
             label="Telefone"
             variant="standard"
-            sx={{ margin: "10px 80px" }}
+            sx={{ margin: "10px 80px" , width: "400px"}}
             onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
             placeholder="(00) 0000-0000"
           />
@@ -197,7 +197,7 @@ export default function CardRegister() {
             type="password"
             autoComplete="current-password"
             variant="standard"
-            sx={{ margin: "10px 80px" }}
+            sx={{ margin: "10px 80px" , width: "400px"}}
             onChange={(e) => setPassword(e.target.value)}
           />
           <TextField
@@ -206,7 +206,7 @@ export default function CardRegister() {
             type="password"
             autoComplete="current-password"
             variant="standard"
-            sx={{ margin: "10px 80px" }}
+            sx={{ margin: "10px 80px" , width: "400px"}}
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
         </Box>

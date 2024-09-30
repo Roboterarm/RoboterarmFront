@@ -21,18 +21,24 @@ import RegisterPage from './Pages/RegisterPage/index.tsx';
 import RecordMacroPage from './Pages/RecordMacroPage/index.tsx';
 import MacrosPage from './Pages/MacrosPage/index.tsx';
 import ProfilePage from './Pages/ProfilePage/index.tsx';
+import RecoverPasswordPage from './Pages/RecoverPassword/index.tsx';
+import RecoverConfirmPage from './Pages/RecoverConfirm/index.tsx';
+import NewPasswordPage from './Pages/NewPassword/index.tsx';
 
 const router = createBrowserRouter([
   
   { path: "/", element: <LoginPage/> },
   { path: "/register", element: <RegisterPage/> },
+  { path: "/recoverypassword", element: <RecoverPasswordPage/> },
+  { path: "/recoveryconfirm", element: <RecoverConfirmPage/> },
   { path: "/sensor", element: <SensorPage/> },
   { path: "/home", element: <HomePage/> },
   { path: "/recordmacro", element: <RecordMacroPage/> },
   { path: "/macros", element: <MacrosPage/> },
   { path: "/perfil", element: <ProfilePage/> },
   { path: "/sair", element: <Navigate to="/" /> },
-
+  
+  { path: "/newPassword", element: <NewPasswordPage/> }, // Precisa ainda fazer uma validação para poder só ser acessado a partir do link
 ]);
 
 createRoot(document.getElementById('root')!).render(

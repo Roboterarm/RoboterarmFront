@@ -15,7 +15,7 @@ import CardActions from "@mui/material/CardActions/CardActions";
 import { useNavigate } from "react-router-dom";
 import { Paper } from "@mui/material";
 
-export default function RecoverPasswordPage() {
+export default function NewPasswordPage() {
     const navigate = useNavigate();
 
     const [email, setEmail] = useState("");
@@ -39,21 +39,30 @@ export default function RecoverPasswordPage() {
                                     borderRadius: 1,
                                     textAlign: "center",
                                 }}>
-                                    <Typography variant="h1" component="div" sx={{ fontSize: "40px", margin: '10px' }}>Digite seu e-mail</Typography>
-                                    <Typography variant="h2" component="div" sx={{ fontSize: "18px", margin: '10px' }}>Digite o seu e-mail, assim que ENVIAR será enviado um link de para você podera recuperar a senha referente a seu email</Typography>
+                                    <Typography variant="h1" component="div" sx={{ fontSize: "40px", margin: '10px' }}>Digite sua nova Senha</Typography>
                                     <TextField
                                         required
-                                        id="standard-required"
-                                        label="Email"
+                                        label="Senha"
+                                        type="password"
+                                        autoComplete="current-password"
                                         variant="standard"
                                         sx={{ margin: "10px 80px" }}
-                                        onChange={(e) => setEmail(e.target.value)}
+                                        // onChange={(e) => setPassword(e.target.value)}
+                                    />
+                                    <TextField
+                                        required
+                                        label="Confirmar Senha"
+                                        type="password"
+                                        autoComplete="current-password"
+                                        variant="standard"
+                                        sx={{ margin: "10px 80px" }}
+                                        // onChange={(e) => setConfirmPassword(e.target.value)}
                                     />
                                 </Box>
                             </CardContent>
                             <CardActions sx={{ justifyContent: "center" }}>
-                                <Button variant="contained" sx={{ width: "140px", height: "50px", margin: "20px 30px" }} onClick={() => navigate("/")}>Voltar</Button>
-                                <Button variant="outlined" sx={{ width: "140px", height: "50px", margin: "20px" }} type="submit" onClick={() => navigate("/recoveryconfirm")} >enviar</Button>
+                                <Button variant="contained" sx={{ width: "140px", height: "50px", margin: "20px 30px" }} onClick={() => navigate("/")}>Cancelar</Button>
+                                <Button variant="outlined" sx={{ width: "140px", height: "50px", margin: "20px" }} type="submit" onClick={() => navigate("/")} >Confirmar</Button>
                             </CardActions>
                         </Paper>
                     </React.Fragment>

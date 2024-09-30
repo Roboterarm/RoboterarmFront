@@ -58,6 +58,7 @@ function Navbar() {
               color: 'inherit',
               textDecoration: 'none',
             }}
+            href=""
           >
             Roboterarm
           </Typography>

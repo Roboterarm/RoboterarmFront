@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Alert from '@mui/material/Alert/Alert';
 import Snackbar from '@mui/material/Snackbar/Snackbar';
+import Link from '@mui/material/Link/Link';
 
 
 export default function CardLogin() {
@@ -129,6 +130,7 @@ export default function CardLogin() {
             sx={{ margin: "10px 80px" }}
             onChange={(e) => setPassword(e.target.value)}
           />
+          <Link href="" onClick={() => navigate("/recoverypassword")} underline="hover">esqueceu a senha?</Link>
         </Box>
       </CardContent>
       <CardActions sx={{ justifyContent: "center" }}>
