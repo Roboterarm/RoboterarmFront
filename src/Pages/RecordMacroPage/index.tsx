@@ -24,6 +24,7 @@ import ButtonStandard from "../../components/buttonNavigation";
 import Grid from "@mui/material/Grid2/Grid2";
 import LinearProgress from '@mui/material/LinearProgress';
 import Typography from "@mui/material/Typography/Typography";
+import axios from "axios";
 
 
 export default function RecordMacroPage() {
@@ -41,37 +42,8 @@ export default function RecordMacroPage() {
     const [rotZ, setRotZ] = useState(0);
     const [muscle, setMuscle] = useState(0);
 
-    const [movements, setMovements] = useState<
-        { posX: number; posY: number; posZ: number; rotX: number; rotY: number; rotZ: number; muscle: number }[]
-    >([]);
-
-    const [save, setSave] = useState({
-        posX: 0,
-        posY: 0,
-        posZ: 0,
-        rotX: 0,
-        rotY: 0,
-        rotZ: 0,
-        muscle: 0,
-    });
-
     useEffect(() => {
         let timer: NodeJS.Timeout | undefined;
-
-        const saveMovement = () => {
-            setMovements((prevMovements) => [
-                ...prevMovements,
-                {
-                    posX,
-                    posY,
-                    posZ,
-                    rotX,
-                    rotY,
-                    rotZ,
-                    muscle,
-                },
-            ]);
-        };
 
         const fetchData = async () => {
             try {
@@ -84,7 +56,7 @@ export default function RecordMacroPage() {
                 setRotZ(res.rotZ);
                 setMuscle(res.muscle);
 
-                setSave({
+                const response = await axios.post('http://localhost:3000/macro/register', {
                     posX: res.posX,
                     posY: res.posY,
                     posZ: res.posZ,
@@ -92,7 +64,16 @@ export default function RecordMacroPage() {
                     rotY: res.rotY,
                     rotZ: res.rotZ,
                     muscle: res.muscle,
-                });
+                  });
+
+                  console.log(response)
+
+                  if (response.status === 201) {
+                    console.log("teste")
+                    setTimeout(() => {
+                    }, 2000);
+                }
+            
 
             } catch (error) {
                 console.error('Error fetching data: ', error);
@@ -103,7 +84,6 @@ export default function RecordMacroPage() {
             timer = setInterval(() => {
                 setTimeLeft(prev => prev - 1);
                 fetchData();
-                saveMovement();
             }, 1000);
 
         } else if (timeLeft === 0) {

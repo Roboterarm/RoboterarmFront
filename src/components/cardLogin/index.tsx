@@ -57,6 +57,7 @@ export default function CardLogin() {
       });
 
       sessionStorage.setItem('token', response.data.accessToken)
+      sessionStorage.setItem('refresh', response.data.refreshToken)
 
       if (response.status === 200) {
         setOpen(true);

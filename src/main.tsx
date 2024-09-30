@@ -1,4 +1,4 @@
-import { StrictMode } from 'react'
+import { StrictMode, useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 import {
   createBrowserRouter,
@@ -24,6 +24,8 @@ import ProfilePage from './Pages/ProfilePage/index.tsx';
 import RecoverPasswordPage from './Pages/RecoverPassword/index.tsx';
 import RecoverConfirmPage from './Pages/RecoverConfirm/index.tsx';
 import NewPasswordPage from './Pages/NewPassword/index.tsx';
+import Sair from './components/logout/index.tsx';
+import ProtectedRoute from './Pages/ProtectRoutePage/index.tsx';
 
 const router = createBrowserRouter([
   
@@ -31,15 +33,62 @@ const router = createBrowserRouter([
   { path: "/register", element: <RegisterPage/> },
   { path: "/recoverypassword", element: <RecoverPasswordPage/> },
   { path: "/recoveryconfirm", element: <RecoverConfirmPage/> },
-  { path: "/sensor", element: <SensorPage/> },
-  { path: "/home", element: <HomePage/> },
-  { path: "/recordmacro", element: <RecordMacroPage/> },
-  { path: "/macros", element: <MacrosPage/> },
-  { path: "/perfil", element: <ProfilePage/> },
-  { path: "/sair", element: <Navigate to="/" /> },
-  
-  { path: "/newPassword", element: <NewPasswordPage/> }, // Precisa ainda fazer uma validação para poder só ser acessado a partir do link
+  {
+    path: "/sensor",
+    element: (
+      <ProtectedRoute
+        errorPage={<Navigate to="/" replace />}  // Redireciona para a página de login se não autenticado
+        targetPage={<SensorPage />}  // Página alvo se autenticado
+      />
+    ),
+  },
+  {
+    path: "/home",
+    element: (
+      <ProtectedRoute
+        errorPage={<Navigate to="/" replace />}
+        targetPage={<HomePage />}
+      />
+    ),
+  },
+  {
+    path: "/recordmacro",
+    element: (
+      <ProtectedRoute
+        errorPage={<Navigate to="/" replace />}
+        targetPage={<RecordMacroPage />}
+      />
+    ),
+  },
+  {
+    path: "/macros",
+    element: (
+      <ProtectedRoute
+        errorPage={<Navigate to="/" replace />}
+        targetPage={<MacrosPage />}
+      />
+    ),
+  },
+  {
+    path: "/perfil",
+    element: (
+      <ProtectedRoute
+        errorPage={<Navigate to="/" replace />}
+        targetPage={<ProfilePage />}
+      />
+    ),
+  },
+  {
+    path: "/sair",
+    element: <Sair />,
+  },
+
+  // Redireciona qualquer rota inválida para a página de login
+  { path: "/*", element: <Navigate to="/" replace /> },
 ]);
+  
+//   { path: "/newPassword", element: <NewPasswordPage/> }, // Precisa ainda fazer uma validação para poder só ser acessado a partir do link
+// ]);
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
