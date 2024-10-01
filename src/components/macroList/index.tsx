@@ -6,65 +6,73 @@ import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import InfoIcon from '@mui/icons-material/Info';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import DeleteIcon from '@mui/icons-material/Delete';
+import axios from 'axios';
 
 
 export default function MacroList() {
-  const [checked, setChecked] = useState([0]);
+  const [checked, setChecked] = useState<number[]>([]);
+  const [macros, setMacros] = useState<any[]>([]); // Inicialize como uma lista vazia
 
-  const handleToggle = (value: number) => () => {
-    const currentIndex = checked.indexOf(value);
-    const newChecked = [...checked];
+  // Função para buscar macros do backend
+  useEffect(() => {
+    const fetchMacros = async () => {
+      try {
+        const token = sessionStorage.getItem("token");
 
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
+        const response = await axios.get('http://localhost:3000/macro/get', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          }
+        });
+        
+        setMacros(response.data); // Armazena os macros no estado
+      } catch (error) {
+        console.error('Erro ao buscar macros:', error);
+      }
+    };
+
+    fetchMacros();
+  }, []);
+
+  const handleDelete = async (id: string) => {
+    try {
+        const token = sessionStorage.getItem("token");
+
+        console.log('Deleting macro with id:', id);
+        await axios.delete(`http://localhost:3000/macro/delete`, {
+            data: id,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            }
+        });
+        setMacros((prevMacros) => prevMacros.filter((macro) => macro._id !== id));
+    } catch (error) {
+        console.error('Error while deleting macro:', error);
     }
-
-    setChecked(newChecked);
   };
 
   return (
-    <>
-      <List sx={{
-        width: '100%', 
-        maxWidth: 500, 
-        maxHeight: 640, 
-        height: 600, 
-        overflow: 'auto',
-        bgcolor: 'background.paper',
-      }}>
-        {[0, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11].map((value) => {
-          const labelId = `checkbox-list-label-${value}`;
-
-          return (
-            <ListItem
-              key={value}
-              secondaryAction={
-                <IconButton edge="end" aria-label="comments">
-                  <DeleteIcon />
-                </IconButton>
-              }
-            >
-              <ListItemButton role={undefined} onClick={handleToggle(value)} dense>
-                {/* <ListItemIcon>
-                  <Checkbox
-                    edge="start"
-                    checked={checked.indexOf(value) !== -1}
-                    tabIndex={-1}
-                    disableRipple
-                    inputProps={{ 'aria-labelledby': labelId }}
-                  />
-                </ListItemIcon> */}
-                <ListItemText id={labelId} primary={`Save  ${value + 1}`} />
-              </ListItemButton>
-            </ListItem>
-          );
-        })}
-      </List>
-    </>
+    <List sx={{
+      width: '100%',
+      maxWidth: 500,
+      maxHeight: 640,
+      height: 600,
+      overflow: 'auto',
+      bgcolor: 'background.paper',
+    }}>
+      {macros.map((macro) => (
+        <ListItem key={macro._id}>
+          <ListItemButton>
+            <ListItemText primary={macro.name} />
+          </ListItemButton>
+          <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(macro._id)}>
+            <DeleteIcon />
+          </IconButton>
+        </ListItem>
+      ))}
+    </List>
   );
 }

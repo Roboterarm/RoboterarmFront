@@ -51,9 +51,15 @@ export default function CardLogin() {
     }
 
     try {
+      const token = sessionStorage.getItem("token");
       const response = await axios.post('http://localhost:3000/auth/login', {
         email: email,
         pass: password
+      },
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        }
       });
 
       sessionStorage.setItem('token', response.data.accessToken)

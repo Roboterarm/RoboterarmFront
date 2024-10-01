@@ -7,6 +7,9 @@ import Paper from "@mui/material/Paper/Paper";
 import Typography from "@mui/material/Typography/Typography";
 import MacroList from "../../components/macroList";
 import ButtonStandard from "../../components/buttonNavigation";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { set } from "firebase/database";
 
 export default function MacrosPage() {
 
@@ -36,7 +39,7 @@ export default function MacrosPage() {
                         size={{ xs: 10, sm: 10, md: 10, lg: 6, xl: 4 }}
                         marginTop="30px">
                         <ButtonStandard path="/home" text="Home" />
-                        <ButtonStandard path="/macros" text="Novo Macro" />
+                        <ButtonStandard path="/recordmacro" text="Novo Macro" />
                         <ButtonStandard path="/sensor" text="Sensor" />
                     </Grid>
                 </Grid>

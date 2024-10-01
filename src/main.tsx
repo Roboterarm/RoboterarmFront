@@ -37,8 +37,8 @@ const router = createBrowserRouter([
     path: "/sensor",
     element: (
       <ProtectedRoute
-        errorPage={<Navigate to="/" replace />}  // Redireciona para a página de login se não autenticado
-        targetPage={<SensorPage />}  // Página alvo se autenticado
+        errorPage={<Navigate to="/" replace />}
+        targetPage={<SensorPage />} 
       />
     ),
   },
@@ -83,7 +83,6 @@ const router = createBrowserRouter([
     element: <Sair />,
   },
 
-  // Redireciona qualquer rota inválida para a página de login
   { path: "/*", element: <Navigate to="/" replace /> },
 ]);
   

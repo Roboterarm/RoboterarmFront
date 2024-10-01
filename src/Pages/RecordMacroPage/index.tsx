@@ -30,6 +30,8 @@ import axios from "axios";
 export default function RecordMacroPage() {
     const fb = useContext(FirebaseContext); 
     const db = getDatabase(fb);
+
+    const name = "Teste"
     
     const [timeLeft, setTimeLeft] = useState<number>(30);
     const [isRunning, setIsRunning] = useState<boolean>(false);
@@ -42,48 +44,97 @@ export default function RecordMacroPage() {
     const [rotZ, setRotZ] = useState(0);
     const [muscle, setMuscle] = useState(0);
 
+    const [id, setId] = useState("")
+
+    const createMacro = async () => {
+        try {
+            const res = (await get(ref(db, 'values/'))).val();
+            setPosX(res.posX);
+            setPosY(res.posY);
+            setPosZ(res.posZ);
+            setRotX(res.rotX);
+            setRotY(res.rotY);
+            setRotZ(res.rotZ);
+            setMuscle(res.muscle);
+
+            const token = sessionStorage.getItem("token");
+
+            const armState = {
+                posX: res.posX,
+                posY: res.posY,
+                posZ: res.posZ,
+                rotX: res.rotX,
+                rotY: res.rotY,
+                rotZ: res.rotZ,
+                muscle: res.muscle
+            };
+
+            const response = await axios.post('http://localhost:3000/macro/register', {
+                name : name,
+                armState : armState
+              }, {
+                headers: {
+                  'Authorization': `Bearer ${token}`,
+                }
+              });
+
+              await setId(response.data._id)
+              console.log(response.data._id)
+
+        } catch (error) {
+            console.error('Error fetching data: ', error);
+        }
+    };
+
+
+    const updateMacro = async () => {
+        try {
+            const res = (await get(ref(db, 'values/'))).val();
+            setPosX(res.posX);
+            setPosY(res.posY);
+            setPosZ(res.posZ);
+            setRotX(res.rotX);
+            setRotY(res.rotY);
+            setRotZ(res.rotZ);
+            setMuscle(res.muscle);
+
+            const token = sessionStorage.getItem("token");
+
+            const armState = {
+                posX: res.posX,
+                posY: res.posY,
+                posZ: res.posZ,
+                rotX: res.rotX,
+                rotY: res.rotY,
+                rotZ: res.rotZ,
+                muscle: res.muscle
+            };
+
+            console.log(id)
+
+            const response = await axios.put('http://localhost:3000/macro/update', {
+                id: id,
+                armState: armState,
+              }, {
+                headers: {
+                  'Authorization': `Bearer ${token}`,
+                }
+              });
+
+              console.log(response)
+        
+        } catch (error) {
+            console.error('Error fetching data: ', error);
+        }
+    };
+
     useEffect(() => {
         let timer: NodeJS.Timeout | undefined;
-
-        const fetchData = async () => {
-            try {
-                const res = (await get(ref(db, 'values/'))).val();
-                setPosX(res.posX);
-                setPosY(res.posY);
-                setPosZ(res.posZ);
-                setRotX(res.rotX);
-                setRotY(res.rotY);
-                setRotZ(res.rotZ);
-                setMuscle(res.muscle);
-
-                const response = await axios.post('http://localhost:3000/macro/register', {
-                    posX: res.posX,
-                    posY: res.posY,
-                    posZ: res.posZ,
-                    rotX: res.rotX,
-                    rotY: res.rotY,
-                    rotZ: res.rotZ,
-                    muscle: res.muscle,
-                  });
-
-                  console.log(response)
-
-                  if (response.status === 201) {
-                    console.log("teste")
-                    setTimeout(() => {
-                    }, 2000);
-                }
-            
-
-            } catch (error) {
-                console.error('Error fetching data: ', error);
-            }
-        };
 
         if (isRunning && timeLeft > 0) {
             timer = setInterval(() => {
                 setTimeLeft(prev => prev - 1);
-                fetchData();
+                updateMacro();
             }, 1000);
 
         } else if (timeLeft === 0) {
@@ -93,7 +144,8 @@ export default function RecordMacroPage() {
         return () => clearInterval(timer);
     }, [isRunning, timeLeft, posX, posY, posZ, rotX, rotY, rotZ, muscle]);
 
-    const startTimer = () => {
+    const startTimer = async () => {
+        await createMacro();
         setIsRunning(true);
         setTimeLeft(30);
     };

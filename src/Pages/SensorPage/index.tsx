@@ -25,19 +25,19 @@ export default function SensorPage() {
   const [rotZ, setRotZ] = useState(0);
   const [muscle, setMuscle] = useState(0);
 
-  function writeUserData() {
-    // console.log("Set value to " + value)
-    // setPosX(value)
-    set(ref(db, 'values/'), {
-      posX: 1,
-      posY: 2,
-      posZ: 3,
-      rotX: 4,
-      rotY: 5,
-      rotZ: 6,
-      muscle: 7
-    });
-  }
+  // function writeUserData() {
+  //   // console.log("Set value to " + value)
+  //   // setPosX(value)
+  //   set(ref(db, 'values/'), {
+  //     posX: 1,
+  //     posY: 2,
+  //     posZ: 3,
+  //     rotX: 4,
+  //     rotY: 5,
+  //     rotZ: 6,
+  //     muscle: 7
+  //   });
+  // }
 
   async function readUserData() {
     const res = (await get(ref(db, 'values/'))).val();
@@ -92,7 +92,7 @@ export default function SensorPage() {
               <RAInput value={muscle} disabled label={"Muscle"} size={{ xs: 12, md: 12 }} />
           </Grid>
           <Grid container justifyContent="center" alignItems="center" size={12}>
-            <ButtonStandard onClick={() => writeUserData()} text="UPP"></ButtonStandard>
+            {/* <ButtonStandard onClick={() => writeUserData()} text="UPP"></ButtonStandard> */}
             <ButtonStandard onClick={() => readUserData()} text="DOWN"></ButtonStandard>
           </Grid>
         </Grid>
