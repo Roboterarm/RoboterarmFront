@@ -35,6 +35,7 @@ export default function RecordMacroPage() {
     const [isEditing, setIsEditing] = useState(false);
 
     const timerRef = useRef<NodeJS.Timeout | undefined>();
+    const idRef = useRef<string>()
     const [timeLeft, setTimeLeft] = useState<number>(30);
     const [isRunning, setIsRunning] = useState<boolean>(false);
 
@@ -45,8 +46,6 @@ export default function RecordMacroPage() {
     const [rotY, setRotY] = useState(0);
     const [rotZ, setRotZ] = useState(0);
     const [muscle, setMuscle] = useState(0);
-
-    const [id, setId] = useState("")
 
     const refreshTokens = async () => {
         const oldToken = sessionStorage.getItem("refresh")
@@ -60,24 +59,38 @@ export default function RecordMacroPage() {
     }
 
     const getFirebaseValues = async () => {
-        const state = (await get(ref(db, 'values/'))).val();
-        setPosX(state.posX);
-        setPosY(state.posY);
-        setPosZ(state.posZ);
-        setRotX(state.rotX);
-        setRotY(state.rotY);
-        setRotZ(state.rotZ);
-        setMuscle(state.muscle);
-
-        return {
-            posX: state.posX,
-            posY: state.posY,
-            posZ: state.posZ,
-            rotX: state.rotX,
-            rotY: state.rotY,
-            rotZ: state.rotZ,
-            muscle: state.muscle
-        };
+        try {
+            const state = (await get(ref(db, 'values/'))).val();
+            setPosX(state.posX || 0);
+            setPosY(state.posY || 0);
+            setPosZ(state.posZ || 0);
+            setRotX(state.rotX || 0);
+            setRotY(state.rotY || 0);
+            setRotZ(state.rotZ || 0);
+            setMuscle(state.muscle || 0);
+    
+            return {
+                posX: state.posX || 0,
+                posY: state.posY || 0,
+                posZ: state.posZ || 0,
+                rotX: state.rotX || 0,
+                rotY: state.rotY || 0,
+                rotZ: state.rotZ || 0,
+                muscle: state.muscle || 0
+            };
+            
+        } catch (error) {
+            console.log("Empty firebase. All values as zero")
+            return {
+                posX: 0,
+                posY: 0,
+                posZ: 0,
+                rotX: 0,
+                rotY: 0,
+                rotZ: 0,
+                muscle: 0
+            };
+        }
     }
 
     const createMacro = async (retry_count: number = 3) => {
@@ -94,8 +107,13 @@ export default function RecordMacroPage() {
             await axios.post('http://localhost:3000/macro/register',
                 data,
                 { headers: { 'Authorization': `Bearer ${token}` } })
-            .then(async (res) => { setId(res.data._id) })
-            .catch(() => {refreshTokens(); createMacro(retry_count - 1)});
+            .then((res) => {
+                idRef.current = res.data._id
+            })
+            .catch(async () => {
+                await refreshTokens();
+                await createMacro(retry_count - 1)
+            });
         } catch (error) {
             console.error('Error fetching data: ', error);
         }
@@ -110,20 +128,23 @@ export default function RecordMacroPage() {
 
             const currArmState = await getFirebaseValues();
             const token = sessionStorage.getItem("token");
-            const data = { id: id, armState: currArmState }
+            const data = { id: idRef.current, armState: currArmState }
             
             await axios.put('http://localhost:3000/macro/update',
                 data,
                 { headers: { 'Authorization': `Bearer ${token}` } })
-            .catch(() => {refreshTokens(); updateMacro(retry_count - 1)});
+            .catch(async () => {
+                await refreshTokens();
+                await updateMacro(retry_count - 1)
+            });
         } catch (error) {
             console.error('Error fetching data: ', error);
         }
     };
 
     const startTimer = async () => {
-        await createMacro();
-
+        await createMacro()
+        
         setIsRunning(true);
         setTimeLeft(30);
 
@@ -134,10 +155,10 @@ export default function RecordMacroPage() {
                     setIsRunning(false)
                     return 0;
                 }
+                updateMacro()
                 return prevTimeLeft - 1;
             });
         }, 1000);
-
     };
 
     const EditName = () => {

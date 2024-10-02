@@ -43,7 +43,6 @@ interface ProtectedRouteProps {
   
             if (refreshExp * 1000 - Date.now() <= 0) {
               setAuthorized(false);
-              console.log("Testesse")
               navigate("/sair");
             } 
             else {
@@ -53,13 +52,11 @@ interface ProtectedRouteProps {
                 });
 
                 const newToken = response.data.accessToken;
-                console.log(newToken)
 
                 if (newToken) {
                   sessionStorage.setItem("token", newToken);
                   setAuthorized(true);
                 } else {
-                  console.log("Teste")
                   setAuthorized(false);
                 }
               } catch (error) {

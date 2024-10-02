@@ -4,7 +4,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import EditIcon from '@mui/icons-material/Edit';
 import ListItemText from '@mui/material/ListItemText';
 import IconButton from '@mui/material/IconButton';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 
 // FireBase
 import FirebaseContext from "../../context/firebaseContext";
@@ -12,92 +12,117 @@ import { get, getDatabase, ref, set } from "firebase/database";
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
+import { redirect } from 'react-router-dom';
 
 
 export default function MacroList() {
-  const [checked, setChecked] = useState<number[]>([]);
+
+  const sendingTimerRef = useRef<NodeJS.Timeout | undefined>()
+  const statesLeftRef = useRef<number>(0)
   const [macros, setMacros] = useState<any[]>([]);
-  const [macrosGet, setMacrosGet] = useState<object>({})
+  const [currMacro, setCurrMacro] = useState<{
+    name: "",
+    owner: "",
+    states: [],
+    __v: "" ,
+    _id: ""
+  } |undefined>()
+
 
   const fb = useContext(FirebaseContext);
   const db = getDatabase(fb);
 
-  useEffect(() => {
-    const fetchMacros = async () => {
-      try {
-        const token = sessionStorage.getItem("token");
+  const refreshTokens = async () => {
+    const oldToken = sessionStorage.getItem("refresh")
+    await axios.post('http://localhost:3000/auth/refresh',
+        { token: oldToken })
+    .then((res) => {
+        sessionStorage.setItem("token", res.data['accessToken'])
+        sessionStorage.setItem("refresh", res.data['refreshToken'])
+    })
+    .catch(() => redirect("login"))  
+  }
 
-        const response = await axios.get('http://localhost:3000/macro/get', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          }
+  const fetchMacros = async (retry_count: number = 3) => {
+    try {
+      if (retry_count < 1)
+        throw new Error('Could not create')
+
+      const token = sessionStorage.getItem("token");
+
+      await axios.get('http://localhost:3000/macro/get',
+        { headers: { 'Authorization': `Bearer ${token}` } })
+      .then((res) => { setMacros(res.data) })
+      .catch(() => { refreshTokens(); fetchMacros(retry_count - 1) });
+
+    } catch (error) {
+      console.error('Erro ao buscar macros:', error);
+    }
+  };
+
+  const handleDelete = async (id: string, retry_count: number = 3) => {
+    try {
+      if (retry_count < 1)
+        throw new Error('Could not create')
+
+      const token = sessionStorage.getItem("token");
+
+      await axios.delete(`http://localhost:3000/macro/delete/${id}`,
+        { headers: { Authorization: `Bearer ${token}` } } )
+      .then(() => { fetchMacros()})
+      .catch(() => { refreshTokens(); handleDelete(id, retry_count - 1) });;
+
+      // setMacros((prevMacros) => prevMacros.filter((macro) => macro._id !== id));
+    } catch (error) {
+      console.error('Error while deleting macro:', error);
+    }
+  };
+
+  const setFirebaseMacro = async (id: string, retry_count: number = 3) => {
+    try {
+      const token = sessionStorage.getItem("token");
+
+      await axios.get(`http://localhost:3000/macro/get/${id}`,
+        { headers: { Authorization: `Bearer ${token}` } })
+        .then((res) => {
+          setCurrMacro(res.data)
+        }).catch(() => {
+          refreshTokens(); setFirebaseMacro(id, retry_count - 1)
         });
 
-        setMacros(response.data);
-      } catch (error) {
-        console.error('Erro ao buscar macros:', error);
-      }
-    };
+    } catch (error) {
+      console.error('Error while deleting macro:', error);
+    }
+  };
 
+  useEffect(() => {
     fetchMacros();
   }, []);
 
-  const handleDelete = async (id: string) => {
-    try {
-      const token = sessionStorage.getItem("token");
-
-      await axios.delete(`http://localhost:3000/macro/delete/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      });
-
-      setMacros((prevMacros) => prevMacros.filter((macro) => macro._id !== id));
-    } catch (error) {
-      console.error('Error while deleting macro:', error);
-    }
-  };
-
-  const getMacro = async (id: string) => {
-    try {
-      const token = sessionStorage.getItem("token");
-
-      const response = await axios.get(`http://localhost:3000/macro/get/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      });
-
-      setMacrosGet(response.data.states);
-
-      // const res = (await get(ref(db, 'values/'))).val();
-      // setPosX(res.posX);
-      // setPosY(res.posY);
-      // setPosZ(res.posZ);
-      // setRotX(res.rotX);
-      // setRotY(res.rotY);
-      // setRotZ(res.rotZ);
-      // setMuscle(res.muscle);
-
-      console.log(macrosGet)
-    } catch (error) {
-      console.error('Error while deleting macro:', error);
-    }
-  };
-
   useEffect(() => {
-    if (Object.keys(macrosGet).length > 0) {
-      Object.entries(macrosGet).forEach(async ([key, value], index) => {
+    if (!currMacro)
+      return
+    
+    if (currMacro.states.length > 0 && statesLeftRef.current == 0) {
+      statesLeftRef.current = currMacro.states.length - 1
+      sendingTimerRef.current = setInterval(async () => {
         try {
-          const dbRef = ref(db, `macro/${key}`);
-          await set(dbRef, value);
-          console.log(`Movimento ${index} (${key}) enviado ao Firebase`, value);
+          const dbRef = ref(db);
+          await set(dbRef, currMacro.states[statesLeftRef.current]);
         } catch (error) {
-          console.error(`Erro ao enviar movimento ${key} ao Firebase:`, error);
+          console.error(`Erro ao enviar movimento ao Firebase:`, error);
         }
-      });
+
+        if (statesLeftRef.current < 1) {
+          clearInterval(sendingTimerRef.current);
+          setCurrMacro(undefined)
+          return
+        }
+        
+        statesLeftRef.current--;
+      }, 1000);
     }
-  }, [macrosGet]);
+  }, [currMacro]);
 
   return (
     <List sx={{
@@ -110,7 +135,7 @@ export default function MacroList() {
     }}>
       {macros.map((macro) => (
         <ListItem key={macro._id}>
-          <ListItemButton onClick={async () => await getMacro(macro._id)}>
+          <ListItemButton onClick={async () => {await setFirebaseMacro(macro._id)}}>
             <ListItemText primary={macro.name} />
           </ListItemButton>
           <IconButton edge="end" aria-label="edit" sx={{ marginRight: "5px" }} onClick={() => {}}>
