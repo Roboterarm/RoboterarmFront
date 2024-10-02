@@ -1,12 +1,14 @@
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
+import EditIcon from '@mui/icons-material/Edit';
 import ListItemText from '@mui/material/ListItemText';
-import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
-import InfoIcon from '@mui/icons-material/Info';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+
+// FireBase
+import FirebaseContext from "../../context/firebaseContext";
+import { get, getDatabase, ref, set } from "firebase/database";
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
@@ -14,9 +16,12 @@ import axios from 'axios';
 
 export default function MacroList() {
   const [checked, setChecked] = useState<number[]>([]);
-  const [macros, setMacros] = useState<any[]>([]); // Inicialize como uma lista vazia
+  const [macros, setMacros] = useState<any[]>([]);
+  const [macrosGet, setMacrosGet] = useState<object>({})
 
-  // Função para buscar macros do backend
+  const fb = useContext(FirebaseContext);
+  const db = getDatabase(fb);
+
   useEffect(() => {
     const fetchMacros = async () => {
       try {
@@ -28,7 +33,7 @@ export default function MacroList() {
           }
         });
         
-        setMacros(response.data); // Armazena os macros no estado
+        setMacros(response.data);
       } catch (error) {
         console.error('Erro ao buscar macros:', error);
       }
@@ -41,18 +46,61 @@ export default function MacroList() {
     try {
         const token = sessionStorage.getItem("token");
 
-        console.log('Deleting macro with id:', id);
-        await axios.delete(`http://localhost:3000/macro/delete`, {
-            data: id,
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            }
-        });
+        await axios.delete(`http://localhost:3000/macro/delete/${id}`, {
+          headers: {
+              Authorization: `Bearer ${token}`,
+          }
+          });
+
         setMacros((prevMacros) => prevMacros.filter((macro) => macro._id !== id));
     } catch (error) {
         console.error('Error while deleting macro:', error);
     }
   };
+
+  const getMacro = async (id: string) => {
+    try {
+        const token = sessionStorage.getItem("token");
+
+        const response = await axios.get(`http://localhost:3000/macro/get/${id}`, {
+          headers: {
+              Authorization: `Bearer ${token}`,
+        }});
+
+        setMacrosGet(response.data.states);
+        
+        // const res = (await get(ref(db, 'values/'))).val();
+        // setPosX(res.posX);
+        // setPosY(res.posY);
+        // setPosZ(res.posZ);
+        // setRotX(res.rotX);
+        // setRotY(res.rotY);
+        // setRotZ(res.rotZ);
+        // setMuscle(res.muscle);
+
+        console.log(macrosGet)
+    } catch (error) {
+        console.error('Error while deleting macro:', error);
+    }
+  };
+
+    useEffect(() => {
+      if (Object.keys(macrosGet).length > 0) {
+        Object.entries(macrosGet).forEach(async ([key, value], index) => {
+          try {
+            const dbRef = ref(db, `macro/${key}`);
+            await set(dbRef, value);
+            console.log(`Movimento ${index} (${key}) enviado ao Firebase`, value);
+          } catch (error) {
+            console.error(`Erro ao enviar movimento ${key} ao Firebase:`, error);
+          }
+        });
+      }
+    }, [macrosGet]);
+
+
+
+
 
   return (
     <List sx={{
@@ -65,9 +113,12 @@ export default function MacroList() {
     }}>
       {macros.map((macro) => (
         <ListItem key={macro._id}>
-          <ListItemButton>
+          <ListItemButton onClick={async () => await getMacro(macro._id)}>
             <ListItemText primary={macro.name} />
           </ListItemButton>
+          <IconButton edge="end" aria-label="edit" sx={{marginRight: "5px"}} onClick={() => handleDelete(macro._id)}>
+            <EditIcon />
+          </IconButton>
           <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(macro._id)}>
             <DeleteIcon />
           </IconButton>

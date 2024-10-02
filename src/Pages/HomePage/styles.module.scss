@@ -11,10 +11,21 @@
 }
 
 .background {
+    width: 80%;
+    height: 1080px;
+    z-index: 1;
+}
+
+.containerbackground{
+    background-image: url('../../assets/Home/background.svg');
     position: absolute;
-    width: 60%;
-    height: 100%;
+    display: flex;
+    justify-content: end;
+    background-size: cover;
+    object-fit: contain;
     z-index: -1;
-    top: 0;
+    top: 40px;
     right: 0;
+    height: 96vh;
+    width: 60%;
 }
