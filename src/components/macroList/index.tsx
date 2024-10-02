@@ -32,7 +32,7 @@ export default function MacroList() {
             'Authorization': `Bearer ${token}`,
           }
         });
-        
+
         setMacros(response.data);
       } catch (error) {
         console.error('Erro ao buscar macros:', error);
@@ -44,63 +44,60 @@ export default function MacroList() {
 
   const handleDelete = async (id: string) => {
     try {
-        const token = sessionStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
 
-        await axios.delete(`http://localhost:3000/macro/delete/${id}`, {
-          headers: {
-              Authorization: `Bearer ${token}`,
-          }
-          });
+      await axios.delete(`http://localhost:3000/macro/delete/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      });
 
-        setMacros((prevMacros) => prevMacros.filter((macro) => macro._id !== id));
+      setMacros((prevMacros) => prevMacros.filter((macro) => macro._id !== id));
     } catch (error) {
-        console.error('Error while deleting macro:', error);
+      console.error('Error while deleting macro:', error);
     }
   };
 
   const getMacro = async (id: string) => {
     try {
-        const token = sessionStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
 
-        const response = await axios.get(`http://localhost:3000/macro/get/${id}`, {
-          headers: {
-              Authorization: `Bearer ${token}`,
-        }});
+      const response = await axios.get(`http://localhost:3000/macro/get/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      });
 
-        setMacrosGet(response.data.states);
-        
-        // const res = (await get(ref(db, 'values/'))).val();
-        // setPosX(res.posX);
-        // setPosY(res.posY);
-        // setPosZ(res.posZ);
-        // setRotX(res.rotX);
-        // setRotY(res.rotY);
-        // setRotZ(res.rotZ);
-        // setMuscle(res.muscle);
+      setMacrosGet(response.data.states);
 
-        console.log(macrosGet)
+      // const res = (await get(ref(db, 'values/'))).val();
+      // setPosX(res.posX);
+      // setPosY(res.posY);
+      // setPosZ(res.posZ);
+      // setRotX(res.rotX);
+      // setRotY(res.rotY);
+      // setRotZ(res.rotZ);
+      // setMuscle(res.muscle);
+
+      console.log(macrosGet)
     } catch (error) {
-        console.error('Error while deleting macro:', error);
+      console.error('Error while deleting macro:', error);
     }
   };
 
-    useEffect(() => {
-      if (Object.keys(macrosGet).length > 0) {
-        Object.entries(macrosGet).forEach(async ([key, value], index) => {
-          try {
-            const dbRef = ref(db, `macro/${key}`);
-            await set(dbRef, value);
-            console.log(`Movimento ${index} (${key}) enviado ao Firebase`, value);
-          } catch (error) {
-            console.error(`Erro ao enviar movimento ${key} ao Firebase:`, error);
-          }
-        });
-      }
-    }, [macrosGet]);
-
-
-
-
+  useEffect(() => {
+    if (Object.keys(macrosGet).length > 0) {
+      Object.entries(macrosGet).forEach(async ([key, value], index) => {
+        try {
+          const dbRef = ref(db, `macro/${key}`);
+          await set(dbRef, value);
+          console.log(`Movimento ${index} (${key}) enviado ao Firebase`, value);
+        } catch (error) {
+          console.error(`Erro ao enviar movimento ${key} ao Firebase:`, error);
+        }
+      });
+    }
+  }, [macrosGet]);
 
   return (
     <List sx={{
@@ -116,7 +113,7 @@ export default function MacroList() {
           <ListItemButton onClick={async () => await getMacro(macro._id)}>
             <ListItemText primary={macro.name} />
           </ListItemButton>
-          <IconButton edge="end" aria-label="edit" sx={{marginRight: "5px"}} onClick={() => handleDelete(macro._id)}>
+          <IconButton edge="end" aria-label="edit" sx={{ marginRight: "5px" }} onClick={() => {}}>
             <EditIcon />
           </IconButton>
           <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(macro._id)}>

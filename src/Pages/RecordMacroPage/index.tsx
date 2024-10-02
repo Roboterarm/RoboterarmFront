@@ -1,5 +1,5 @@
 
-import { useContext, useEffect, useState } from "react";
+import { useContext, useRef, useState } from "react";
 
 // FireBase
 import FirebaseContext from "../../context/firebaseContext";
@@ -25,6 +25,7 @@ import Grid from "@mui/material/Grid2/Grid2";
 import LinearProgress from '@mui/material/LinearProgress';
 import Typography from "@mui/material/Typography/Typography";
 import axios from "axios";
+import { redirect } from "react-router-dom";
 
 export default function RecordMacroPage() {
     const fb = useContext(FirebaseContext);
@@ -33,6 +34,7 @@ export default function RecordMacroPage() {
     const [name, setName] = useState("Roboterarm");
     const [isEditing, setIsEditing] = useState(false);
 
+    const timerRef = useRef<NodeJS.Timeout | undefined>();
     const [timeLeft, setTimeLeft] = useState<number>(30);
     const [isRunning, setIsRunning] = useState<boolean>(false);
 
@@ -46,106 +48,96 @@ export default function RecordMacroPage() {
 
     const [id, setId] = useState("")
 
-    const createMacro = async () => {
+    const refreshTokens = async () => {
+        const oldToken = sessionStorage.getItem("refresh")
+        await axios.post('http://localhost:3000/auth/refresh',
+            { token: oldToken })
+        .then((res) => {
+            sessionStorage.setItem("token", res.data['accessToken'])
+            sessionStorage.setItem("refresh", res.data['refreshToken'])
+        })
+        .catch(() => redirect("login"))  
+    }
+
+    const getFirebaseValues = async () => {
+        const state = (await get(ref(db, 'values/'))).val();
+        setPosX(state.posX);
+        setPosY(state.posY);
+        setPosZ(state.posZ);
+        setRotX(state.rotX);
+        setRotY(state.rotY);
+        setRotZ(state.rotZ);
+        setMuscle(state.muscle);
+
+        return {
+            posX: state.posX,
+            posY: state.posY,
+            posZ: state.posZ,
+            rotX: state.rotX,
+            rotY: state.rotY,
+            rotZ: state.rotZ,
+            muscle: state.muscle
+        };
+    }
+
+    const createMacro = async (retry_count: number = 3) => {
         try {
-            const res = (await get(ref(db, 'values/'))).val();
-            setPosX(res.posX);
-            setPosY(res.posY);
-            setPosZ(res.posZ);
-            setRotX(res.rotX);
-            setRotY(res.rotY);
-            setRotZ(res.rotZ);
-            setMuscle(res.muscle);
+            if (retry_count < 1) {
+                setIsRunning(false)
+                throw new Error('Could not create')
+            }
 
+            const currArmState = await getFirebaseValues();
             const token = sessionStorage.getItem("token");
+            const data = { name: name, armState: currArmState }
 
-            const armState = {
-                posX: res.posX,
-                posY: res.posY,
-                posZ: res.posZ,
-                rotX: res.rotX,
-                rotY: res.rotY,
-                rotZ: res.rotZ,
-                muscle: res.muscle
-            };
-
-            const response = await axios.post('http://localhost:3000/macro/register', {
-                name: name,
-                armState: armState
-            }, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                }
-            });
-
-            await setId(response.data._id)
+            await axios.post('http://localhost:3000/macro/register',
+                data,
+                { headers: { 'Authorization': `Bearer ${token}` } })
+            .then(async (res) => { setId(res.data._id) })
+            .catch(() => {refreshTokens(); createMacro(retry_count - 1)});
         } catch (error) {
             console.error('Error fetching data: ', error);
         }
     };
 
-
-    const updateMacro = async () => {
+    const updateMacro = async (retry_count: number = 3) => {
         try {
-            const res = (await get(ref(db, 'values/'))).val();
-            setPosX(res.posX);
-            setPosY(res.posY);
-            setPosZ(res.posZ);
-            setRotX(res.rotX);
-            setRotY(res.rotY);
-            setRotZ(res.rotZ);
-            setMuscle(res.muscle);
+            if (retry_count < 1) {
+                setIsRunning(false)
+                throw new Error('Could not udpate')
+            }
 
+            const currArmState = await getFirebaseValues();
             const token = sessionStorage.getItem("token");
-
-            const armState = {
-                posX: res.posX,
-                posY: res.posY,
-                posZ: res.posZ,
-                rotX: res.rotX,
-                rotY: res.rotY,
-                rotZ: res.rotZ,
-                muscle: res.muscle
-            };
-
-            console.log(id)
-
-            const response = await axios.put('http://localhost:3000/macro/update', {
-                id: id,
-                armState: armState,
-            }, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                }
-            });
-
-            console.log(response)
-
+            const data = { id: id, armState: currArmState }
+            
+            await axios.put('http://localhost:3000/macro/update',
+                data,
+                { headers: { 'Authorization': `Bearer ${token}` } })
+            .catch(() => {refreshTokens(); updateMacro(retry_count - 1)});
         } catch (error) {
             console.error('Error fetching data: ', error);
         }
     };
-
-    useEffect(() => {
-        let timer: NodeJS.Timeout | undefined;
-
-        if (isRunning && timeLeft > 0) {
-            timer = setInterval(() => {
-                setTimeLeft(prev => prev - 1);
-                updateMacro();
-            }, 1000);
-
-        } else if (timeLeft === 0) {
-            setIsRunning(false);
-            clearInterval(timer);
-        }
-        return () => clearInterval(timer);
-    }, [isRunning, timeLeft, posX, posY, posZ, rotX, rotY, rotZ, muscle]);
 
     const startTimer = async () => {
         await createMacro();
+
         setIsRunning(true);
         setTimeLeft(30);
+
+        timerRef.current = setInterval(() => {
+            setTimeLeft((prevTimeLeft) => {
+                if (prevTimeLeft <= 0) {
+                    clearInterval(timerRef.current);
+                    setIsRunning(false)
+                    return 0;
+                }
+                return prevTimeLeft - 1;
+            });
+        }, 1000);
+
     };
 
     const EditName = () => {
