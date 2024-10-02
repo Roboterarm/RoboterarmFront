@@ -55,7 +55,6 @@ export default function HomePage() {
                     </Grid>
                 </Grid>
                 <div className={styles.containerbackground}>
-                    {/* <img src={background} className={styles.background} alt="bg2" /> */}
                 </div>
             
             </ThemeProvider>

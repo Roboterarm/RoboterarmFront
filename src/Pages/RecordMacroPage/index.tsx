@@ -1,5 +1,6 @@
 
 import { useContext, useRef, useState } from "react";
+import styles from "./styles.module.scss"
 
 // FireBase
 import FirebaseContext from "../../context/firebaseContext";
@@ -45,7 +46,7 @@ export default function RecordMacroPage() {
     const [rotX, setRotX] = useState(0);
     const [rotY, setRotY] = useState(0);
     const [rotZ, setRotZ] = useState(0);
-    const [muscle, setMuscle] = useState(0);
+    const [grip, setGrip] = useState(0);
 
     const refreshTokens = async () => {
         const oldToken = sessionStorage.getItem("refresh")
@@ -67,7 +68,7 @@ export default function RecordMacroPage() {
             setRotX(state.rotX || 0);
             setRotY(state.rotY || 0);
             setRotZ(state.rotZ || 0);
-            setMuscle(state.muscle || 0);
+            setGrip(state.grip || 0);
     
             return {
                 posX: state.posX || 0,
@@ -76,7 +77,7 @@ export default function RecordMacroPage() {
                 rotX: state.rotX || 0,
                 rotY: state.rotY || 0,
                 rotZ: state.rotZ || 0,
-                muscle: state.muscle || 0
+                grip: state.grip || 0
             };
             
         } catch (error) {
@@ -88,7 +89,7 @@ export default function RecordMacroPage() {
                 rotX: 0,
                 rotY: 0,
                 rotZ: 0,
-                muscle: 0
+                grip: 0
             };
         }
     }
@@ -256,7 +257,7 @@ export default function RecordMacroPage() {
                         size={{ xs: 10, sm: 10, md: 10, lg: 6, xl: 6 }}
                         offset={{ xs: 1, sm: 1, md: 1, lg: 0, xl: 0 }}
                     >
-                        <RAInput value={muscle} disabled label={"Muscle"} size={{ xs: 12, md: 12 }} />
+                        <RAInput value={grip} disabled label={"Grip"} size={{ xs: 12, md: 12 }} />
                     </Grid>
                 </Grid>
                 <Grid container
@@ -269,7 +270,7 @@ export default function RecordMacroPage() {
                     <ButtonStandard onClick={() => window.location.reload()} text="Reset" />
                 </Grid>
             </Grid>
-            {/* <img src={background} className={styles.background} alt="bg2" /> */}
-        </ThemeProvider >
+            <div className={styles.containerbackground}></div>        
+            </ThemeProvider >
     );
 }

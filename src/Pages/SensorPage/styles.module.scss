@@ -4,3 +4,16 @@
   transform: translate(-80%, -50%);
   z-index: -1;
 }
+.containerbackground{
+  background-image: url('../../assets/Macro/background.svg');
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  background-size: cover;
+  object-fit: contain;
+  z-index: -1;
+  top: -15px;
+  right: 0;
+  height: 50vw;
+  width: 100%;
+}

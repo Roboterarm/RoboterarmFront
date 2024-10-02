@@ -1,4 +1,5 @@
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
+import styles from "./styles.module.scss"
 import ligth from "../../components/themes";
 import Navbar from "../../components/navbar";
 import Container from "@mui/material/Container/Container";
@@ -61,7 +62,7 @@ export default function ProfilePage() {
                     </Grid>
                 </Grid>
             </Container>
-            {/* <img src={background} className={styles.background} alt="background"/> */}
-        </ThemeProvider>
+            <div className={styles.containerbackground}></div>        
+            </ThemeProvider>
     );
 }

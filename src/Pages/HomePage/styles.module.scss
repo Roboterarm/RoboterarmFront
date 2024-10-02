@@ -29,3 +29,11 @@
     height: 96vh;
     width: 60%;
 }
+
+@media (max-width: 1540px) {
+    .containerbackground {
+        display: none;
+        overflow:scroll; /* Hide scrollbars */
+    }
+
+}

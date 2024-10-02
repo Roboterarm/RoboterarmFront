@@ -3,7 +3,6 @@ import styles from "./styles.module.scss"
 import { ThemeProvider } from '@mui/material/styles';
 import ligth from "../../components/themes/index.tsx";
 
-import background from "../../assets/Login/background.svg";
 import CardLogin from "../../components/cardLogin/index.tsx";
 import Grid from "@mui/material/Grid2";
 import Typography from "@mui/material/Typography/Typography";
@@ -20,7 +19,7 @@ export default function LoginRegisterPage() {
                     <CardLogin/>
                 </Grid>
             </Grid>
-        <img src={background} className={styles.background} alt="background" />
+            <div className={styles.containerbackground}></div>        
         </ThemeProvider>
     );
 }

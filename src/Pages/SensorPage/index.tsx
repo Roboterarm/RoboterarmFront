@@ -23,7 +23,7 @@ export default function SensorPage() {
   const [rotX, setRotX] = useState(0);
   const [rotY, setRotY] = useState(0);
   const [rotZ, setRotZ] = useState(0);
-  const [muscle, setMuscle] = useState(0);
+  const [grip, setGrip] = useState(0);
 
   // function writeUserData() {
   //   // console.log("Set value to " + value)
@@ -35,19 +35,19 @@ export default function SensorPage() {
   //     rotX: 4,
   //     rotY: 5,
   //     rotZ: 6,
-  //     muscle: 7
+  //     grip: 7
   //   });
   // }
 
   async function readUserData() {
-    const res = (await get(ref(db, 'values/'))).val();
+    const res = (await get(ref(db))).val();
     setPosX(res.posX);
     setPosY(res.posY);
     setPosZ(res.posZ);
     setRotX(res.rotX);
     setRotY(res.rotY);
     setRotZ(res.rotZ);
-    setMuscle(res.muscle);
+    setGrip(res.grip);
   }
 
   return (
@@ -89,14 +89,14 @@ export default function SensorPage() {
               size={{ xs: 10, sm: 10, md: 10, lg: 6, xl: 6 }}
               offset={{ xs: 1, sm: 1, md: 1, lg: 0, xl: 0 }}
           >
-              <RAInput value={muscle} disabled label={"Muscle"} size={{ xs: 12, md: 12 }} />
+              <RAInput value={grip} disabled label={"Grip"} size={{ xs: 12, md: 12 }} />
           </Grid>
           <Grid container justifyContent="center" alignItems="center" size={12}>
             {/* <ButtonStandard onClick={() => writeUserData()} text="UPP"></ButtonStandard> */}
-            <ButtonStandard onClick={() => readUserData()} text="DOWN"></ButtonStandard>
+            <ButtonStandard onClick={() => readUserData()} text="Atualizar"></ButtonStandard>
           </Grid>
         </Grid>
-      {/* <img src={bg2} className={styles.bgbars} alt="bg2" /> */}
+        <div className={styles.containerbackground}></div>        
     </Container>        
     </ThemeProvider>
   );

@@ -112,7 +112,7 @@ export default function MacroList() {
         } catch (error) {
           console.error(`Erro ao enviar movimento ao Firebase:`, error);
         }
-
+        console.log(currMacro.states[statesLeftRef.current])
         if (statesLeftRef.current < 1) {
           clearInterval(sendingTimerRef.current);
           setCurrMacro(undefined)

@@ -1,3 +1,5 @@
+import styles from "./styles.module.scss"
+
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
 import ligth from "../../components/themes";
 import Grid from "@mui/material/Grid2/Grid2";
@@ -45,7 +47,7 @@ export default function MacrosPage() {
                 </Grid>
             </Grid>
         </Container>
-        {/* <img src={background} className={styles.background} alt="background"/> */}
+        <div className={styles.containerbackground}></div>        
         </ThemeProvider>
     );
 }
